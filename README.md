@@ -232,7 +232,7 @@ Wait are you lazy? You need Auto Scroll
     return message;
   };
 
-  console.log("🚀 Scraper is live... auto-scrolling enabled!");
+  console.log("Scraper is live... auto-scrolling enabled!");
   console.log("Run `stopScroll()` to stop scrolling.");
   console.log("Run `downloadTweets()` to save tweets as JSON.");
 })();
