@@ -83,7 +83,12 @@ Scrape Tweets while Scrolling
 })();
 ```
 
-Voila you're done, and as i'm sharing this
+Voila you're done
+
+download via thia
+```js
+downloadTweets()
+```
 
 
 very random but this the graphql endpoint
@@ -93,7 +98,7 @@ very random but this the graphql endpoint
 
 ```bash
 https://x.com/i/api/graphql/0uQE4rvNofAr4pboHOZWVA/UserTweets?variables={
-  "userId": "1654347044503408640",
+  "userId": "1654221044503408640",
   "count": 20,
   "includePromotedContent": true,
   "withQuickPromoteEligibilityTweetFields": true,
@@ -139,7 +144,7 @@ https://x.com/i/api/graphql/0uQE4rvNofAr4pboHOZWVA/UserTweets?variables={
 
 ```bash
 curl 'https://x.com/i/api/graphql/0uQE4rvNofAr4pboHOZWVA/UserTweets?variables=...' \
-  -H 'authorization: Bearer AAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5...' \
+  -H 'authorization: Bearer AAAAAAAAAAAAAAAAANRegergerAAAAAnNwIzUejRCOuH5...' \
   -H 'x-csrf-token: <your ct0 token>' \
   -H 'cookie: auth_token=...; ct0=...' \
   -H 'x-twitter-auth-type: OAuth2Session' \
@@ -157,86 +162,6 @@ Most likely i'm banned from twitter for this basic thing or maybe just winning +
 But again use this for educational purposes only and don't misuse this but one of my main reason to build this is to replicate a persona of my fav twitter creators and write tweets like them :3
 
 Wait are you lazy? You need Auto Scroll
-
-
-```js
-(() => {
-  const scraped = new Set();
-  const results = [];
-
-  const extractTweets = () => {
-    const articles = document.querySelectorAll("article");
-
-    articles.forEach((article) => {
-      const textEl = article.querySelector('div[data-testid="tweetText"]');
-      const userEl = article.querySelector('div[dir="ltr"] > span');
-
-      const statGroup = article.querySelector('div[role="group"]');
-      if (!statGroup) return;
-
-      let replies = null, reposts = null, likes = null, views = null;
-
-      const statElements = statGroup.querySelectorAll('[aria-label]');
-      statElements.forEach((el) => {
-        const label = el.getAttribute("aria-label")?.toLowerCase() || "";
-        const match = label.match(/([\d.,Kk]+)/);
-        const value = match ? match[1].replace(/,/g, "") : null;
-
-        if (label.includes("reply")) replies = value;
-        else if (label.includes("repost")) reposts = value;
-        else if (label.includes("like")) likes = value;
-        else if (label.includes("view")) views = value;
-      });
-
-      const text = textEl?.innerText?.trim();
-      const username = userEl?.innerText?.trim();
-
-      if (text && username) {
-        const id = `${username}::${text}`;
-        if (!scraped.has(id)) {
-          scraped.add(id);
-          results.push({ username, text, replies, reposts, likes, views });
-          console.log(`@${username} — 💬 ${replies} 🔁 ${reposts} ❤️ ${likes} 👁️ ${views}\n> ${text}`);
-        }
-      }
-    });
-  };
-
-  const observer = new MutationObserver(() => {
-    extractTweets();
-  });
-
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  let scrollInterval = setInterval(() => {
-    window.scrollBy(0, 1000);
-  }, 1000);
-
-  window.stopScroll = () => {
-    clearInterval(scrollInterval);
-    const message = `Auto-scroll stopped. Total tweets scraped: ${results.length}`;
-    console.log(message);
-    return message;
-  };
-
-  window.downloadTweets = () => {
-    const blob = new Blob([JSON.stringify(results, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "tweets_with_stats.json";
-    a.click();
-    URL.revokeObjectURL(url);
-    const message = `Downloaded ${results.length} tweets as tweets_with_stats.json`;
-    console.log(message);
-    return message;
-  };
-
-  console.log("Scraper is live... auto-scrolling enabled!");
-  console.log("Run `stopScroll()` to stop scrolling.");
-  console.log("Run `downloadTweets()` to save tweets as JSON.");
-})();
-```
 
 ### Auto Scroll with Batch Scraping
 
